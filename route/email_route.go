@@ -1,0 +1,22 @@
+package route
+
+import (
+	"auto-emails/auth"
+	"auto-emails/controller"
+	"auto-emails/service"
+
+	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
+)
+
+func EmailRoute(router *gin.Engine, db *gorm.DB, validate *validator.Validate) {
+
+	emailService := service.NewEmailService(
+		db,
+		validate,
+	)
+	emailController := controller.NewEmailController(emailService)
+
+	router.GET("/auto-email", auth.Auth(emailController.EmailProsess, []string{}))
+}
