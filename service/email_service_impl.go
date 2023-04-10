@@ -29,20 +29,27 @@ func NewEmailService(
 func (service *EmailServiceImpl) EmailProsess(auth *auth.AccessDetails) error {
     // membaca file lampiran
     lampiranPath := "file/ins.png"
+	
+	// alamat penerima
 	toEmail1 := "umarmfi45@gmail.com"
 	toEmail2 := "viraandini45@gmail.com"
 	to := []string{toEmail1, toEmail2}
-    judul := "Messange Month"
-    pesan := "Auto Proses Email"
-    lampiranBytes, err := os.ReadFile(lampiranPath)
+    
+	// subject
+	judul := "Messange Month"
+    
+	// message
+	pesan := "Auto Proses Email"
+    
+	lampiranBytes, err := os.ReadFile(lampiranPath)
     if err != nil {
         return err
     }
+
     // data pengirim
     from := "umarmarufmutaqin@gmail.com"
     password := "bjaeozfwvluvewvf"
 
-    // alamat penerima
 
     // Pengaturan email
 	subjek := "Subject: " + judul + "\n"
