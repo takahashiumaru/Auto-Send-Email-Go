@@ -2,9 +2,12 @@ package service
 
 import (
 	"auto-emails/auth"
-	"auto-emails/helper"
-	"fmt"
+	"bytes"
+	"encoding/base64"
 	"net/smtp"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -24,40 +27,64 @@ func NewEmailService(
 }
 
 func (service *EmailServiceImpl) EmailProsess(auth *auth.AccessDetails) error {
-	tx := service.DB.Begin()
-	err := tx.Error
-	helper.PanicIfError(err)
-
-	defer helper.CommitOrRollback(tx)
-
-	// data pengirim
-	from := "---"
-	password := "---"
-
-	// alamat penerima
-	toEmail1 := "---"
-	toEmail2 := "---"
+    // membaca file lampiran
+    lampiranPath := "file/ins.png"
+	toEmail1 := "umarmfi45@gmail.com"
+	toEmail2 := "viraandini45@gmail.com"
 	to := []string{toEmail1, toEmail2}
+    judul := "Messange Month"
+    pesan := "Auto Proses Email"
+    lampiranBytes, err := os.ReadFile(lampiranPath)
+    if err != nil {
+        return err
+    }
+    // data pengirim
+    from := "umarmarufmutaqin@gmail.com"
+    password := "bjaeozfwvluvewvf"
 
-	// smtp - Simple Mail Transfer Protocol
-	host := "smtp.gmail.com"
-	port := "587"
-	address := host + ":" + port
+    // alamat penerima
 
-	// pesan
-	subject := "Subject: Email Pertama Kami\n"
-	body := "<h1>Ini adalah isi email pertama kami menggunakan Golang</h1>"
+    // Pengaturan email
+	subjek := "Subject: " + judul + "\n"
 
-	message := []byte(subject + "\r\n" + body)
+	// Membuat email buffer
+	var email bytes.Buffer
+	email.WriteString("From: " + from + "\r\n")
+	email.WriteString("To: " + strings.Join(to, ", ") + "\r\n")
+	email.WriteString(subjek)
+	email.WriteString("MIME-version: 1.0\r\n")
+	email.WriteString("Content-Type: multipart/mixed; boundary=\"myboundary\"\r\n")
+	email.WriteString("\r\n")
 
-	// data otentikasi
-	authEmail := smtp.PlainAuth("", from, password, host)
+	// Menambahkan konten teks
+	email.WriteString("--myboundary\r\n")
+	email.WriteString("Content-Type: text/plain; charset=\"utf-8\"\r\n")
+	email.WriteString("Content-Transfer-Encoding: quoted-printable\r\n")
+	email.WriteString("\r\n")
+	email.WriteString(pesan)
+	email.WriteString("\r\n")
 
-	// kirim email
-	err = smtp.SendMail(address, authEmail, from, to, message)
-	if err != nil {
-		fmt.Println("err:", err)
-	}
+	// Menambahkan lampiran gambar
+	email.WriteString("--myboundary\r\n")
+	email.WriteString("Content-Type: image/png; name=\"" + filepath.Base(lampiranPath) + "\"\r\n")
+	email.WriteString("Content-Transfer-Encoding: base64\r\n")
+	email.WriteString("Content-Disposition: attachment; filename=\"" + filepath.Base(lampiranPath) + "\"\r\n")
+	email.WriteString("\r\n")
+	encodedLampiran := base64.StdEncoding.EncodeToString(lampiranBytes)
+	email.WriteString(encodedLampiran)
+	email.WriteString("\r\n--myboundary--\r\n")
 
-	return nil
+
+    // pengaturan koneksi SMTP
+    smtpHost := "smtp.gmail.com"
+    smtpPort := "587"
+    smtpAddr := smtpHost + ":" + smtpPort
+    authEmail := smtp.PlainAuth("", from, password, smtpHost)
+
+    // mengirim email
+    err = smtp.SendMail(smtpAddr, authEmail, from, to, email.Bytes())
+    if err != nil {
+        return err
+    }
+    return nil
 }
