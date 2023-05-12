@@ -31,8 +31,8 @@ func (service *EmailServiceImpl) EmailProsess(auth *auth.AccessDetails) error {
     lampiranPath := "file/ins.png"
 	
 	// alamat penerima
-	toEmail1 := "umarmfi45@gmail.com"
-	toEmail2 := "viraandini45@gmail.com"
+	toEmail1 := "-"
+	toEmail2 := "-"
 	to := []string{toEmail1, toEmail2}
     
 	// subject
@@ -47,8 +47,8 @@ func (service *EmailServiceImpl) EmailProsess(auth *auth.AccessDetails) error {
     }
 
     // data pengirim
-    from := "umarmarufmutaqin@gmail.com"
-    password := "bjaeozfwvluvewvf"
+    from := "-"
+    password := "-"
 
 
     // Pengaturan email
