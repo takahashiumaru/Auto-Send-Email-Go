@@ -27,7 +27,7 @@ func main() {
 
 	router := app.NewRouter(dbMS, dbMY, validate)
 	server := http.Server{
-		Addr:    ":" + port,
+		Addr:    ":" + "8080",
 		Handler: router,
 	}
 	log.Printf("Server is running on port %s", port)
