@@ -9,7 +9,7 @@ import (
 	"auto-emails/helper"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/gorilla/mux" // Import Gorilla Mux router
+	// Import Gorilla Mux router
 )
 
 func main() {
@@ -25,17 +25,18 @@ func main() {
 	validate := validator.New()
 	helper.RegisterValidation(validate)
 
+	// Create a handler function for your routes
 	router := app.NewRouter(dbMS, dbMY, validate)
 
-	// Create a Gorilla Mux router and add your router as a subrouter
-	r := mux.NewRouter()
-	r.Handle("/", router)
+	// Define your routes using http.HandleFunc
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		router.ServeHTTP(w, r)
+	})
 
 	// Create a server and listen on the desired port
 	port := configuration.Port
 	server := &http.Server{
-		Addr:    ":" + port,
-		Handler: r, // Use Gorilla Mux router as the main handler
+		Addr: ":" + port,
 	}
 
 	log.Printf("Server is running on port %s", port)
