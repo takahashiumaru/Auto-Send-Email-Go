@@ -3,22 +3,18 @@
   "builds": [
     {
       "src": "main.go", 
-      "use": "@vercel/go" 
+      "use": "@vercel/go"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)", 
+      "dest": "api/main" 
+    },
+    {
       "src": "/.*",
-      "dest": "main" 
+      "status": 404,
+      "dest": "404.html" 
     }
-  ],
-  "env": {
-    
-    
-  },
-  "functions": {
-    "api": {
-      "handler": "main" 
-    }
-  }
+  ]
 }
