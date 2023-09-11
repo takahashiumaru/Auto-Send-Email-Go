@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"net/http"
 	"runtime/debug"
 
 	"auto-emails/exception"
@@ -24,9 +25,18 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
+func NotFoundHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Endpoint not found",
+		})
+	}
+}
+
 func NewRouter(dbMS *gorm.DB, dbMY *gorm.DB, validate *validator.Validate) *gin.Engine {
 	router := gin.New()
 	router.Use(ErrorHandler())
+	router.NoRoute(NotFoundHandler())
 	route.EmailRoute(router, dbMS, dbMY, validate)
 
 	return router
