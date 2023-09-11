@@ -1,7 +1,7 @@
 {
-      "functions": {
+  "functions": {
     "api/handler": {
-      "handler": "main.main"
+      "handler": "index.main"
     }
   },
   "routes": [
