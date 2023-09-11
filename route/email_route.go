@@ -3,6 +3,7 @@ package route
 import (
 	"auto-emails/auth"
 	"auto-emails/controller"
+	"auto-emails/repository"
 	"auto-emails/service"
 
 	"github.com/gin-gonic/gin"
@@ -10,10 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func EmailRoute(router *gin.Engine, db *gorm.DB, validate *validator.Validate) {
+func EmailRoute(router *gin.Engine, dbMS *gorm.DB, dbMY *gorm.DB, validate *validator.Validate) {
 
 	emailService := service.NewEmailService(
-		db,
+		repository.NewEmailRepository(),
+		dbMS,
+		dbMY,
 		validate,
 	)
 	emailController := controller.NewEmailController(emailService)

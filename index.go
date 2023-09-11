@@ -18,13 +18,14 @@ func main() {
 	}
 
 	port := configuration.Port
-	db := app.ConnectDatabase(configuration.User, configuration.Host, configuration.Password, configuration.PortDB, configuration.Db)
+	dbMS := app.ConnectDatabaseMS(configuration.UserMS, configuration.HostMS, configuration.PasswordMS, configuration.PortDBMS, configuration.DbMS)
+	dbMY := app.ConnectDatabaseMY(configuration.UserMY, configuration.HostMY, configuration.PasswordMY, configuration.PortDBMY, configuration.DbMY)
 
 	// Validator
 	validate := validator.New()
 	helper.RegisterValidation(validate)
 
-	router := app.NewRouter(db, validate)
+	router := app.NewRouter(dbMS, dbMY, validate)
 	server := http.Server{
 		Addr:    ":" + port,
 		Handler: router,

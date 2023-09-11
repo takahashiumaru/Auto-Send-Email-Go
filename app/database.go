@@ -5,14 +5,34 @@ import (
 	"os"
 	"time"
 
-	"auto-emails/helper"
-
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-func ConnectDatabase(user, host, password, port, db string) *gorm.DB {
+func ConnectDatabaseMS(user, host, password, port, db string) *gorm.DB {
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: time.Second,
+			LogLevel:      logger.Info,
+			Colorful:      true,
+		},
+	)
+
+	dsn := "sqlserver://" + user + ":" + password + "@" + host + ":" + port + "?database=" + db
+	database, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	return database
+}
+
+func ConnectDatabaseMY(user, host, password, port, db string) *gorm.DB {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -28,16 +48,6 @@ func ConnectDatabase(user, host, password, port, db string) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-
-	// RUN before_auto_migrate.sql
-	helper.RunSQLFromFile(database, "app/database/before_auto_migrate.sql")
-
-	if err != nil {
-		panic("failed to auto migrate schema")
-	}
-
-	// RUN after_auto_migrate.sql
-	helper.RunSQLFromFile(database, "app/database/after_auto_migrate.sql")
 
 	return database
 }

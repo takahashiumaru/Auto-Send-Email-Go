@@ -24,10 +24,10 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
-func NewRouter(db *gorm.DB, validate *validator.Validate) *gin.Engine {
+func NewRouter(dbMS *gorm.DB, dbMY *gorm.DB, validate *validator.Validate) *gin.Engine {
 	router := gin.New()
 	router.Use(ErrorHandler())
-	route.EmailRoute(router, db, validate)
+	route.EmailRoute(router, dbMS, dbMY, validate)
 
 	return router
 }
