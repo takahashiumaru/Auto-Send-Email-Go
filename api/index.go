@@ -9,6 +9,7 @@ import (
 	"auto-emails/helper"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux" // Import Gorilla Mux router
 )
 
 func main() {
@@ -17,7 +18,6 @@ func main() {
 		log.Fatalln("Failed at config", err)
 	}
 
-	port := configuration.Port
 	dbMS := app.ConnectDatabaseMS(configuration.UserMS, configuration.HostMS, configuration.PasswordMS, configuration.PortDBMS, configuration.DbMS)
 	dbMY := app.ConnectDatabaseMY(configuration.UserMY, configuration.HostMY, configuration.PasswordMY, configuration.PortDBMY, configuration.DbMY)
 
@@ -26,12 +26,22 @@ func main() {
 	helper.RegisterValidation(validate)
 
 	router := app.NewRouter(dbMS, dbMY, validate)
-	server := http.Server{
+
+	// Create a Gorilla Mux router and add your router as a subrouter
+	r := mux.NewRouter()
+	r.Handle("/", router)
+
+	// Create a server and listen on the desired port
+	port := configuration.Port
+	server := &http.Server{
 		Addr:    ":" + port,
-		Handler: router,
+		Handler: r, // Use Gorilla Mux router as the main handler
 	}
+
 	log.Printf("Server is running on port %s", port)
 
 	err = server.ListenAndServe()
-	helper.PanicIfError(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
