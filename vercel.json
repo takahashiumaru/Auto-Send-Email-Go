@@ -1,11 +1,15 @@
 {
-      "build": {
-    "env": {
-      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+  "version": 2,
+  "builds": [
+    {
+      "src": "main.go",
+      "use": "@now/go"
     }
-  },
-
+  ],
   "routes": [
-    { "src": "api/.*", "dest": "api/index" }
+    {
+      "src": "/(.*)",
+      "dest": "main.go"
+    }
   ]
 }
