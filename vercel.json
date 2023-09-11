@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "/main.go"
     }
-  ],
-  "env": {
-  },
-  "functions": {
-
-  }
+  ]
 }
