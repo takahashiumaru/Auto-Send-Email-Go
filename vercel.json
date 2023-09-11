@@ -1,14 +1,24 @@
 {
-  "functions": {
-    "api/handler": {
-      "handler": "handler.Handler"
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.go", 
+      "use": "@vercel/go"
     }
-  },
+  ],
   "routes": [
     {
-      "src": "api/.*",
-      "dest": "api/index"
+      "src": "/.*",
+      "dest": "index"
     }
-  ]
-
+  ],
+  "env": {
+    
+    
+  },
+  "functions": {
+    "api": {
+      "handler": "handler.Handler" 
+    }
+  }
 }
