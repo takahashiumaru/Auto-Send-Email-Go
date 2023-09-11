@@ -21,5 +21,5 @@ func EmailRoute(router *gin.Engine, dbMS *gorm.DB, dbMY *gorm.DB, validate *vali
 	)
 	emailController := controller.NewEmailController(emailService)
 
-	router.GET("/auto-email", auth.Auth(emailController.EmailProsess, []string{}))
+	router.GET("/", auth.Auth(emailController.EmailProsess, []string{}))
 }
