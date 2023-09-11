@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"log"
@@ -9,10 +9,9 @@ import (
 	"auto-emails/helper"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/gorilla/mux" // Import Gorilla Mux router
 )
 
-func main() {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	configuration, err := c.LoadConfig()
 	if err != nil {
 		log.Fatalln("Failed at config", err)
@@ -27,21 +26,6 @@ func main() {
 
 	router := app.NewRouter(dbMS, dbMY, validate)
 
-	// Create a Gorilla Mux router and add your router as a subrouter
-	r := mux.NewRouter()
-	r.Handle("/", router)
-
-	// Create a server and listen on the desired port
-	port := configuration.Port
-	server := &http.Server{
-		Addr:    ":" + port,
-		Handler: r, // Use Gorilla Mux router as the main handler
-	}
-
-	log.Printf("Server is running on port %s", port)
-
-	err = server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// Handle the request
+	router.ServeHTTP(w, r)
 }
