@@ -8,6 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
+	github.com/tbxark/g4vercel v0.0.4
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/sqlserver v1.5.1
 	gorm.io/gorm v1.25.1
