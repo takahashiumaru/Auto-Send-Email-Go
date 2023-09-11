@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"log"
@@ -11,12 +11,13 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func main() {
 	configuration, err := c.LoadConfig()
 	if err != nil {
 		log.Fatalln("Failed at config", err)
 	}
 
+	port := configuration.Port
 	dbMS := app.ConnectDatabaseMS(configuration.UserMS, configuration.HostMS, configuration.PasswordMS, configuration.PortDBMS, configuration.DbMS)
 	dbMY := app.ConnectDatabaseMY(configuration.UserMY, configuration.HostMY, configuration.PasswordMY, configuration.PortDBMY, configuration.DbMY)
 
@@ -25,7 +26,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	helper.RegisterValidation(validate)
 
 	router := app.NewRouter(dbMS, dbMY, validate)
+	server := http.Server{
+		Addr:    ":" + port,
+		Handler: router,
+	}
+	log.Printf("Server is running on port %s", port)
 
-	// Handle the request
-	router.ServeHTTP(w, r)
+	err = server.ListenAndServe()
+	helper.PanicIfError(err)
 }
