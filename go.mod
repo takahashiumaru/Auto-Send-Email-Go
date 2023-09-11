@@ -6,7 +6,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.9.0
 	github.com/go-playground/validator/v10 v10.12.0
-	github.com/gorilla/mux v1.8.0
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	gorm.io/driver/mysql v1.4.7
