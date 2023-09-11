@@ -1,11 +1,14 @@
 {
-      "build": {
-    "env": {
-      "GO_BUILD_FLAGS": "-ldflags '-s -w'"
+  "functions": {
+    "api/handler": {
+      "handler": "handler.Handler"
     }
   },
-
   "routes": [
-    { "src": "api/.*", "dest": "api/index" }
+    {
+      "src": "api/.*",
+      "dest": "api/handler"
+    }
   ]
+
 }
